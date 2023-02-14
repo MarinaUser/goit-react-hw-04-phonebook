@@ -1,46 +1,44 @@
-import React, { Component } from 'react';
-import { nanoid } from 'nanoid';
+import {useState } from "react";
 import { FormContact, FormLabel, FormInput, AddBtn } from './Form.styled';
 
-export class Form extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+export const Form = ({onSubmit}) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
- nanoidIdName = nanoid();
- nanoidIdNumber = nanoid();
 
-  handleChange = evt => {
+  const handleChange = evt => {
     const { name, value } = evt.target;
   
-    this.setState({ [name]: value });
+    switch (name) {
+        case 'name':
+            setName(value);
+            break;
+
+        case 'number':
+            setNumber(value);
+            break;
+
+    default:
+        return;
+    }
   };
 
-  handleSubmit = evt => {
+  const handleSubmit = evt => {
     evt.preventDefault();
-    const { name, number } = this.state;
-    this.props.onSubmit(name, number);
     
-    this.reset();
+    onSubmit(name, number);
+      setName('');
+      setNumber('');
   };
-
-  reset = () => {
-    this.setState({
-      name: '',
-      number: '',
-    });
-  };
-
-  render() {
+  
     return (
-      <FormContact onSubmit={this.handleSubmit}>
-        <FormLabel htmlFor={this.nanoidIdName}>
+      <FormContact onSubmit={handleSubmit}>
+        <FormLabel >
           Name
           <FormInput
-            value={this.state.name}
-            id={this.nanoidIdName}
-            onChange={this.handleChange}
+            value={name}
+            // id={nanoidIdName}
+            onChange={handleChange}
             type="text"
             name="name"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -48,12 +46,12 @@ export class Form extends Component {
             required
           />
         </FormLabel>
-        <FormLabel htmlFor={this.nanoidIdNumber}>
+        <FormLabel >
           Number
           <FormInput
-            value={this.state.number}
-            id={this.nanoidIdNumber}
-            onChange={this.handleChange}
+            value={number}
+            // id={nanoidIdNumber}
+            onChange={handleChange}
             type="tel"
             name="number"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
@@ -67,4 +65,3 @@ export class Form extends Component {
       </FormContact>
     );
   }
-}
